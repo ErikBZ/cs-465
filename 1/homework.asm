@@ -1,8 +1,8 @@
 .data
-input: .asciiz "Input number: "
-output: .asciiz "Entered number: "
-print_odd: .asciiz "Number of Odd Factors: "
-print_even: .asciiz "Number of Even Factors: "
+input: .asciiz "Please enter a positive int: "
+output: .asciiz "User input: "
+print_odd: .asciiz "Number of odd Factors: "
+print_even: .asciiz "Number of even Factors: "
 
 .text
 # loading print syscall and calling it
@@ -35,6 +35,7 @@ syscall
 li $a2, 0
 li $s0, 0
 li $s1, 0
+
 loop:
 add $a2, $a2 , 1
 #dividing and then setting a3 to the remainder
