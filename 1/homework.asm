@@ -1,3 +1,13 @@
+# Sean Gamble sgamble2 G00892005
+# Erik Zapata ezapatar G00988337
+
+# algorithmn
+# loop through each number from 1 to n where
+# n is the number input by the user
+# check each number for divisablilty with n
+# if its odd, increment the odd counter
+# if its even, increment the even counter
+
 .data
 input: .asciiz "Please enter a positive int: "
 output: .asciiz "User input: "
@@ -36,6 +46,8 @@ li $a2, 0
 li $s0, 0
 li $s1, 0
 
+# brute force just test all numbers from 1 to n for
+# divisablity with n
 loop:
 add $a2, $a2 , 1
 #dividing and then setting a3 to the remainder
