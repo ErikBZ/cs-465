@@ -2,9 +2,10 @@
 
 .data
 #data stuff will go here
-base: .asciiz "Please enter the base: "
-value: .asciiz "How many values?: "
-strq: .asciiz "input string: "
+base: .asciiz "What is the base: "
+value: .asciiz "How many values? "
+total: .asciiz "Total: "
+strq: .asciiz "What is the value? "
 # address for strings
 str_input: .space 9
 
@@ -60,7 +61,7 @@ get_num:
 	j if2
 	#else its letter, -61
 	if1:
-	addi $t1, $t1, -97 
+	addi $t1, $t1, -87 
 	#get place by max-cur
 	if2:
 	sub $t4, $t3, $t2
@@ -96,30 +97,32 @@ syscall
 #accepts the int input for value, save it
 li $v0, 5
 syscall
-add $t0,$v0, $zero
-#print asking for base
-li $v0, 4
-la $a0, base
-syscall
-#get int input for base
-li $v0, 5
-syscall
-#put value in return and return
-# v1 is the number of values, v0 is the base
-add $v1,$t0, $zero
 jr $ra
+
+ask_for_base:
+	#print asking for base
+	li $v0, 4
+	la $a0, base
+	syscall
+	#get int input for base
+	li $v0, 5
+	syscall
+	jr $ra
 
 
 start:
 #get value and base
 jal ask_for_value
 #in v0/v1 or base/value in t7/t6, store
-add $t7,$v0, $zero
-add $t6,$v1, $zero
-#get values strings, while t6=/=0 get, convert, store
+add $t6,$v0, $zero
+
 l1:
 beqz  $t6, l1d
 addi $t6, $t6, -1
+
+# save base into  
+jal ask_for_base
+add $t7, $v0, $zero
 
 #ask for string
 li $v0, 4
@@ -137,11 +140,19 @@ addi $a1, $t7, 0
 jal get_num
 add $s0, $s0, $v0
 
-# echoing out the number calculated
-li $v0, 1
-add $a0, $s0, $zero
-syscall
+## echoing out the number calculated
+#li $v0, 1
+#add $a0, $s0, $zero
+#syscall
 
 j l1
 l1d:
-add $v0, $s0, $zero	
+# printing total
+li $v0, 4
+la $a0, total
+syscall
+
+#printing the sum of all numbers
+add $a0, $s0, $zero	
+li $v0, 1
+syscall
