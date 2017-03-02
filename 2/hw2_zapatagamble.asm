@@ -39,12 +39,14 @@ get_num:
 	#or a carriage return
 	# setting it back a character so it points
 	# to the least significant character
-	addi $t0, $t0, -1
 	addi $t3, $t2, 0
-	#t0 has address of last char, t2 has number of chars
-	
+
+	#t0 has address of last char, t2 has number of chars	
 	#loop sub 48 from numbers(>60), 87 from letters(<60)
 	get_next_char_value:
+
+	addi $t0, $t0, -1
+
 	#loop while theres still chars left
 	beq $t2,$zero, l3d
 	addi $t2, $t2, -1
@@ -72,8 +74,8 @@ get_num:
 	# what in tarnation
 	# a1 is the base
 	l4:
-	beqz $t4,l4d
 	addi $t4, $t4, -1
+	beqz $t4,l4d
 	mult  $t5, $a1
 	mflo $t5
 	j l4
