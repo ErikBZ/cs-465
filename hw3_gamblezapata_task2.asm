@@ -8,10 +8,15 @@ multiplicand: .asciiz "Multiplicand? "
 	#ask for 2 numbers here
 	la $a0, multiplier
 	jal ask_for_integer
+	add $s0, $v0, $zero
 	la $a0, multiplicand
 	jal ask_for_integer
+	add $s1, $v0, $zero
 	
 	#pass the two numbers into the opt_multiply
+	add $a0, $zero, $s0
+	add $a1, $zero, $s1
+	jal opt_multiply
 	
 	# print v0
 	
@@ -58,5 +63,24 @@ ask_for_integer:
 # a1 is the multiplier
 .globl opt_multiply
 opt_multiply:
-	#put stuff her
+	#pushing stuff to the stack
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+
+	#put stuff here
+
+	#printing the first argument
+	li $v0, 1
+	syscall
+
+	jal new_line
+	
+	# printing the second argument
+	add $a0, $zero, $s1
+	li $v0, 1
+	syscall
+
+	#popping the stack
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	jr $ra
