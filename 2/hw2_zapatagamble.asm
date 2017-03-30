@@ -18,11 +18,36 @@ j start
 # 30 - 39 are numbers 0-9
 # 61 - some number is a through z
 .globl get_num
+# this algorithmn takes the starting address of the character string
+# traverses it until it reaches a \n or \0 while countin the number of characaters.
+# after that it begins from the least siginifant digit and starts traversing
+# backwards until it reaches the beginning of the string
+# each char it gets, it calculates it's value by subtracting 48 from it's
+# ascii value of it they are the characters 0-9 and 87 if they are the characters
+# a-f. this way a - f are mapped to numbers 10 - 16
+# to convert it to decimal you take the position of the char you got, and raise the
+# base to that value and then multiply it by the value of that char so you get
+# c * b^i. summing all these values up is the conversation from ascii string, with a base
+# of 8, 10, or 16 to decimal
 get_num:
+	#pushing the arguments and ra to the stack
+	addi $sp, $sp, -12
+	sw $ra, 0($sp)
+	sw $a0, 4($sp)
+	sw $a1, 8($sp)
+	
 	#get null term by loopin a0 str, a1 base
 	li $t2, 0
 	li $v0, 0
 	addi  $t0, $a0, 0
+	
+	beq $a1, 8, calc_length
+	beq $a1, 10, calc_length
+	beq $a1, 16, calc_length
+	
+	#if it's neither of the above, load -1 into $v0 and jump to the end of the function
+	li $v0, -1
+	j l3d
 	
 	calc_length:
 	lbu $t1, 0($t0)
@@ -85,19 +110,24 @@ get_num:
 	mflo $t5
 	add $v0, $v0, $t5
 	j get_next_char_value
+	
 	l3d:
+	lw $a1, 8($sp)
+	lw $a0, 4($sp)
+	lw $ra, 0($sp)
+	addi $sp, $sp, 12
 	jr $ra
 
 
 ask_for_value:
-# outputs the string asking for how many values
-li $v0, 4
-la $a0, value
-syscall
-#accepts the int input for value, save it
-li $v0, 5
-syscall
-jr $ra
+	# outputs the string asking for how many values
+	li $v0, 4
+	la $a0, value
+	syscall
+	#accepts the int input for value, save it
+	li $v0, 5
+	syscall
+	jr $ra
 
 ask_for_base:
 	#print asking for base
@@ -138,6 +168,10 @@ syscall
 #load base into a1 and call get num
 addi $a1, $t7, 0
 jal get_num
+# if it's a number with base 8, 10 or 16 o straight to adding
+bne $v0, -1, good_num
+li $v0, 0
+good_num:
 add $s0, $s0, $v0
 
 ## echoing out the number calculated
